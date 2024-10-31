@@ -59,7 +59,7 @@ navbarPage("Dashboard", id="nav",
              
             fluidRow(
               column(4,
-                     selectInput("region", "Region:", regiones)
+                     selectInput("region", "Region:", c("National", regiones))
               ),
               column(4,
                      selectInput("sex", "Sex:", sexo)
@@ -74,9 +74,15 @@ navbarPage("Dashboard", id="nav",
         plotlyOutput("Plot1", height = 250),
         
         # Plot 2
+        # h5("Evolution by sex "#, textOutput("region")
+        #    ),
+        # plotlyOutput("Plot2", height = 300)
+      conditionalPanel(
+        condition = "input.region != 'National'",
         h5("Evolution by sex "#, textOutput("region")
-           ),
-        plotlyOutput("Plot2", height = 300)
+        ),
+        plotlyOutput("plot2")
+                )
       ),
 
     )

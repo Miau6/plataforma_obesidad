@@ -57,7 +57,8 @@ function(input, output, session) {
     #   select(CVE_Reg,Pctg,Region)
     
     state <- baloo() %>% 
-      select(CVE_Reg,Pctg,Region)
+      select(CVE_Reg,Pctg,Region) %>% 
+      filter(if(input$region=="National") Region!="" else Region ==input$region)
     
     # merge state-level shape with regional info
     map  <- merge(shpEnt, regions_ordered, by.x = "state", by.y = "State") 
@@ -100,27 +101,70 @@ function(input, output, session) {
       sep="") %>%
       lapply(htmltools::HTML)
     
-    m1 <- leaflet(map) %>% 
-      addTiles()  %>% 
-      addPolygons( 
-        # color = ~colorQuantile("YlGnBu", Pctg)(Pctg), 
-        color = ~colorQuantile("Reds", Pctg)(Pctg),
-      #  color = ~pal(Region), 
-        stroke=FALSE, 
-        fillOpacity = 0.75, 
-        weight=10,
-        label = mytext,
-        labelOptions = labelOptions( 
-          style = list("font-weight" = "normal", padding = "3px 8px"), 
-          textsize = "13px", 
-          direction = "auto"
-        )
-      ) %>%
-      addLegend(position = "bottomleft", 
-                pal = colorQuantile("Reds", map$Pctg),
-                values = map$Pctg, 
-                title = "Rate Percent") %>% 
-      setView(lng = -86.35, lat = 22.45, zoom = 4.95)
+    m1 <- 
+        if (input$region == "National") {
+          leaflet(map) %>% 
+            addTiles() %>%  addPolygons( 
+            fillColor = ~colorQuantile("Reds", Pctg)(Pctg),  # Ajuste a fillColor
+            stroke = FALSE, 
+            fillOpacity = 0.75, 
+            weight = 10,
+            label = mytext,
+            labelOptions = labelOptions( 
+              style = list("font-weight" = "normal", padding = "3px 8px"), 
+              textsize = "13px", 
+              direction = "auto"
+            )
+          ) %>%
+            addLegend(
+              position = "bottomleft", 
+              pal = colorQuantile("Reds", map$Pctg),
+              values = map$Pctg, 
+              title = "Rate Percent"
+            ) %>%
+            setView(lng = -86.35, lat = 22.45, zoom = 4.95)
+        } else {
+          leaflet(map) %>% 
+            addTiles() %>%  addPolygons( 
+            fillColor = ~pal(Region),  # Ajuste a fillColor
+            stroke = FALSE, 
+            fillOpacity = 0.55, 
+            weight = 10,
+            label = mytext,
+            labelOptions = labelOptions( 
+              style = list("font-weight" = "normal", padding = "3px 8px"), 
+              textsize = "13px", 
+              direction = "auto"
+            )
+          ) %>%
+            setView(lng = -86.35, lat = 22.45, zoom = 4.95)
+        }
+      
+    
+      # addPolygons( 
+      #   # color = ~colorQuantile("YlGnBu", Pctg)(Pctg), 
+      #   color = ~colorQuantile("Reds", Pctg)(Pctg),
+      #   
+      # #  color = ~pal(Region), 
+      #   stroke=FALSE, 
+      #   fillOpacity = 0.75, 
+      #   weight=10,
+      #   label = mytext,
+      #   labelOptions = labelOptions( 
+      #     style = list("font-weight" = "normal", padding = "3px 8px"), 
+      #     textsize = "13px", 
+      #     direction = "auto", 
+      #     # if(input$region=="National") color=~colorQuantile("Reds", Pctg)(Pctg) else 
+      #     #   color=~colorFactor("YlGnBu", Pctg)(Pctg)
+      #   )
+      # ) %>%
+      # addLegend(position = "bottomleft", 
+      #           pal = colorQuantile("Reds", map$Pctg),
+      #           values = map$Pctg, 
+      #           title = "Rate Percent") %>% 
+      # setView(lng = -86.35, lat = 22.45, zoom = 4.95)
+    
+    
     
     m1
     
@@ -159,7 +203,10 @@ function(input, output, session) {
 
   output$Plot2 <- renderPlotly({
 
-    Data2 <- Data %>% filter(Region ==input$region, indicator==input$indicator, age==input$age) %>%
+    Data2 <- Data %>% 
+      filter(if(input$region=="National") Region!="" else Region ==input$region,
+      indicator==input$indicator,
+      age==input$age) %>%
       select(year,gender,Pctg)
     
     #aqui no sirve balooo porque nos interesa ambos sexos
