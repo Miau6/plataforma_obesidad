@@ -41,12 +41,12 @@ navbarPage("Dashboard", id="nav",
       #   condition = "input.region != 'National'",
       #   # h5("Evolution by sex ", textOutput("region_text")
       #   # ),
-      #   plotlyOutput("plot3", width="50%", height="40%")
-      #   
+      #   plotlyOutput("plot3", width="70%", height="40%")
+      # 
       # ),
 
       absolutePanel(id = "controls", class = "panel panel-default", fixed = TRUE,
-        draggable = TRUE, top = 50, left = "auto", right = 20, bottom = "auto",
+        draggable = T, top = 50, left = "auto", right = 20, bottom = "auto",
         width = 750, height = "auto",
 
 #        tags$p(
@@ -86,10 +86,11 @@ navbarPage("Dashboard", id="nav",
         # plotlyOutput("Plot2", height = 300)
       conditionalPanel(
         condition = "input.region != 'National'",
-       
+
         h5("Evolution by sex ", textOutput("region_text")
         ),
-        plotlyOutput("plot2", height = 100, width = 200)
+        tags$br(),  # Aquí va el break line
+        plotlyOutput("Plot2", height = 350)
         # plotOutput("plot2")
                 )
       ),
