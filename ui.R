@@ -37,6 +37,13 @@ navbarPage("Dashboard", id="nav",
       ),
 
       leafletOutput("map", width="98%", height="98%"),
+      # conditionalPanel(
+      #   condition = "input.region != 'National'",
+      #   # h5("Evolution by sex ", textOutput("region_text")
+      #   # ),
+      #   plotlyOutput("plot3", width="50%", height="40%")
+      #   
+      # ),
 
       absolutePanel(id = "controls", class = "panel panel-default", fixed = TRUE,
         draggable = TRUE, top = 50, left = "auto", right = 20, bottom = "auto",
@@ -79,9 +86,11 @@ navbarPage("Dashboard", id="nav",
         # plotlyOutput("Plot2", height = 300)
       conditionalPanel(
         condition = "input.region != 'National'",
-        h5("Evolution by sex "#, textOutput("region")
+       
+        h5("Evolution by sex ", textOutput("region_text")
         ),
-        plotlyOutput("plot2")
+        plotlyOutput("plot2", height = 100, width = 200)
+        # plotOutput("plot2")
                 )
       ),
 
