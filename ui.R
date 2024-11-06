@@ -78,7 +78,7 @@ navbarPage("Dashboard", id="nav",
 
         # Plot 1
         h5("Comparison by sex and region"),
-        plotlyOutput("Plot1", height = 250),
+        plotlyOutput("Plot1", height = 220),
         
         # Plot 2
         # h5("Evolution by sex "#, textOutput("region")
@@ -87,10 +87,10 @@ navbarPage("Dashboard", id="nav",
       conditionalPanel(
         condition = "input.region != 'National'",
 
-        h5("Evolution by sex ", textOutput("region_text")
+        h5(textOutput("region_text")
         ),
-        tags$br(),  # Aquí va el break line
-        plotlyOutput("Plot2", height = 350)
+        # tags$br(),  # Aquí va el break line
+        plotlyOutput("Plot2", height = 320)
         # plotOutput("plot2")
                 )
       ),

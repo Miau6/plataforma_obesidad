@@ -251,7 +251,7 @@ function(input, output, session) {
                        text=paste0("Year: ", year,
                                    "<br>Percent: ", Pctg,
                                    "<br>Sex: ", gender)), #shape =15,
-                   show.legend = TRUE, size=5) +
+                   show.legend = F, size=5) +
         # geom_text(aes(x = aver, y = year, label= Difference), color = "gray3", hjust=0, size=3) +
         # scale_y_continuous(breaks = seq(min(D$year), max(D$year), by = 2)) +
         scale_y_continuous(breaks = unique(D$year)) +
@@ -263,9 +263,11 @@ function(input, output, session) {
           y = " "
         ) +
         theme_minimal( ) +
-        theme(text = element_text(size = 15),
+        theme(text = element_text(size = 13),
               legend.position = "bottom") +
-        theme(legend.title = element_blank()) +
+        theme(legend.title = element_blank(), 
+              # axis.title.x = element_blank()
+              ) +
         labs(color="Gender") +
         scale_color_manual(values=sex_colors)
 
@@ -275,13 +277,34 @@ function(input, output, session) {
                sex_max=factor(sex_max),
                label=ifelse(sex_max==1, "Male", "Female"))
       p2 <-
+        if (length(unique(Males$label))==2) {
         Males %>%
         ggplot(aes(x=diff,y=year)) +
-        geom_text(aes(x=0, label=Difference, color=label,
+        # geom_text(aes(x=0, label=Difference, color=label,
+        #               text=paste0("Year: ", year,
+        #                           "<br>Difference: ", Difference,
+        #                           "<br>Max sex: ", label)),
+        #           fontface="bold", show.legend = F,
+        #           # color=sex_colors[2],
+        #           size=5) +
+        
+        geom_text(data=. %>%
+                    filter(label=="Male"),
+                    aes(x=0, label=Difference, #color=label,
                       text=paste0("Year: ", year,
                                   "<br>Difference: ", Difference,
                                   "<br>Max sex: ", label)),
                   fontface="bold", show.legend = F,
+                  color=sex_colors[2],
+                  size=5) +
+        geom_text(data=. %>%
+                    filter(label=="Female"),
+                  aes(x=0, label=Difference, #color=label,
+                      text=paste0("Year: ", year,
+                                  "<br>Difference: ", Difference,
+                                  "<br>Max sex: ", label)),
+                  fontface="bold", show.legend = F,
+                  color=sex_colors[1],
                   size=5) +
         scale_y_continuous(breaks = unique(D$year)) +
 
@@ -299,8 +322,84 @@ function(input, output, session) {
           plot.margin = margin(l=0, r=0, b=0, t=0), #otherwise it adds too much space
           panel.background = element_rect(fill="#EFEFE3", color="#EFEFE3"),
           legend.position = "none"
-        )+
-        scale_color_manual(values=sex_colors)
+        )
+          } else if (unique(Males$label)=="Male"){
+        Males %>%
+          ggplot(aes(x=diff,y=year)) +
+          # geom_text(aes(x=0, label=Difference, color=label,
+          #               text=paste0("Year: ", year,
+          #                           "<br>Difference: ", Difference,
+          #                           "<br>Max sex: ", label)),
+          #           fontface="bold", show.legend = F,
+          #           # color=sex_colors[2],
+          #           size=5) +
+          
+          geom_text(data=. %>%
+                      filter(label=="Male"),
+                    aes(x=0, label=Difference, #color=label,
+                        text=paste0("Year: ", year,
+                                    "<br>Difference: ", Difference,
+                                    "<br>Max sex: ", label)),
+                    fontface="bold", show.legend = F,
+                    color=sex_colors[2],
+                    size=5) +
+          scale_y_continuous(breaks = unique(D$year)) +
+          
+          # geom_text(aes(x=0, y=3), # 7 because that's the # of y-axis values
+          #           # label="Diff",
+          #           nudge_y =.5, # match the nudge value of the main plot legend
+          #           fontface="bold",
+          #           size=3.25) +
+          
+          theme_void() +
+          # coord_cartesian(xlim = c(-.05, 0.05),
+          #                 ylim=c(1,7.5) # needs to match main plot
+          # )+
+          theme(
+            plot.margin = margin(l=0, r=0, b=0, t=0), #otherwise it adds too much space
+            panel.background = element_rect(fill="#EFEFE3", color="#EFEFE3"),
+            legend.position = "none"
+          )#+
+          # scale_color_manual(values=sex_colors)
+      } else if(unique(Males$label)=="Female") {
+        Males %>%
+          ggplot(aes(x=diff,y=year)) +
+          # geom_text(aes(x=0, label=Difference, color=label,
+          #               text=paste0("Year: ", year,
+          #                           "<br>Difference: ", Difference,
+          #                           "<br>Max sex: ", label)),
+          #           fontface="bold", show.legend = F,
+          #           # color=sex_colors[2],
+          #           size=5) +
+          
+          geom_text(data=. %>%
+                      filter(label=="Female"),
+                    aes(x=0, label=Difference, #color=label,
+                        text=paste0("Year: ", year,
+                                    "<br>Difference: ", Difference,
+                                    "<br>Max sex: ", label)),
+                    fontface="bold", show.legend = F,
+                    color=sex_colors[1],
+                    size=5) +
+          scale_y_continuous(breaks = unique(D$year)) +
+          
+          # geom_text(aes(x=0, y=3), # 7 because that's the # of y-axis values
+          #           # label="Diff",
+          #           nudge_y =.5, # match the nudge value of the main plot legend
+          #           fontface="bold",
+          #           size=3.25) +
+          
+          theme_void() +
+          # coord_cartesian(xlim = c(-.05, 0.05),
+          #                 ylim=c(1,7.5) # needs to match main plot
+          # )+
+          theme(
+            plot.margin = margin(l=0, r=0, b=0, t=0), #otherwise it adds too much space
+            panel.background = element_rect(fill="#EFEFE3", color="#EFEFE3"),
+            legend.position = "none"
+          )#+
+        # scale_color_manual(values=sex_colors)
+      }
 
 
       # p_whole <-
@@ -310,185 +409,53 @@ function(input, output, session) {
       #                                    area(l=0,  r=45, t=0, b=1), # defines the main figure area
       #                                    area(l=46, r=52, t=0, b=1)  # defines the gap figure area
       #                                  ))
-      p_ly <- ggplotly(p, tooltip = "text") #%>% layout(title = "Region: South")
-      p2_ly <- ggplotly(p2, tooltip = "text") #%>% layout(title= "Difference")
+      p_ly <- ggplotly(p, tooltip = "text") #%>% 
+        # layout(legend = list(
+        #   orientation = "h",      # Orientación horizontal
+        #   x = 0.5,                # Centrar la leyenda en el eje x
+        #   y = -0.2,               # Colocar la leyenda debajo del gráfico
+        #   xanchor = "center",     # Anclar la leyenda al centro
+        #   yanchor = "top"         # Anclar en la parte superior de la leyenda
+        # )) #%>% layout(showlegend = FALSE)
+      p2_ly <- ggplotly(p2, tooltip = "text") #%>% layout(showlegend = FALSE)
       subplot(p_ly,
               p2_ly, nrows = 1, shareX = TRUE, #shareY = TRUE,
               titleX = T, titleY = T, margin = c(0.005, 0.005, .8, 0.005),
-              widths = c(.9,.1))
+              widths = c(.9,.1)) %>%
+        layout(legend = list(
+          orientation = "h",      # Orientación horizontal
+          x = 0.5,                # Centrar la leyenda en el eje x
+          y = -0.5,               # Colocar la leyenda debajo del gráfico
+          xanchor = "center",     # Anclar la leyenda al centro
+          yanchor = "top",
+          font = list(size = 14) # Anclar en la parte superior de la leyenda
+        ), 
+        showlegend=T,showlegend2=F#, 
+        # annotations = list(
+        #   list(
+        #     x = 0.5,            # Posición horizontal centrada
+        #     y = -0.15,           # Colocar arriba del gráfico
+        #     text = "Rate (%)",  # Texto del título
+        #     xref = "paper",
+        #     yref = "paper",
+        #     showarrow = FALSE,
+        #     font = list(size = 16)
+        #   )
+        # )
+        
+        )
       
     
-    
-    
+   
 
     
     # p_whole
   })
+ 
   
-  output$plot3 <- renderPlotly({
-    req(input$region != "Nacional")
-    
-      Data2 <- Data %>%
-        filter(Region ==input$region,
-               indicator==input$indicator,
-               age==input$age) %>%
-        select(year,gender,Pctg)
-
-      #aqui no sirve balooo porque nos interesa ambos sexos
-      # Data2 <- baloo() %>% #filter(Region ==input$region, indicator==input$indicator, age==input$age) %>%
-      #   select(year,gender,Pctg)
-
-      D <- spread(Data2, key = gender, value = Pctg)
-      D$diff <- D$Male - D$Female
-      D$aver <- 0.5*D$Female + 0.5*D$Male
-      D <- gather(D, gender, Pctg, Female:Male , factor_key=TRUE)
-      D <- D %>%
-        mutate(Difference=comma(abs(diff), .01))
-
-      Males <- D %>%
-        filter(gender == "Male")
-      Females <- D %>%
-        filter(gender == "Female")
-      head(Females)
-
-      p <- ggplot(D)+
-        geom_segment(data = Males,
-                     aes(x = Pctg, y = year,
-                         yend = Females$year, xend = Females$Pctg), #use the $ operator to fetch data from our "Females" tibble
-                     color = "azure3",
-                     size = 7, #Note that I sized the segment to fit the points
-                     alpha = .5) +
-        geom_point(aes(x = Pctg, y = year, color = gender,
-                       text=paste0("Year: ", year,
-                                   "<br>Percent: ", Pctg,
-                                   "<br>Sex: ", gender)), #shape =15,
-                   show.legend = TRUE, size=5) +
-        # geom_text(aes(x = aver, y = year, label= Difference), color = "gray3", hjust=0, size=3) +
-        # scale_y_continuous(breaks = seq(min(D$year), max(D$year), by = 2)) +
-        scale_y_continuous(breaks = unique(D$year)) +
-        scale_x_continuous(limits = c(min(D$Pctg), max(D$Pctg)+1)) +
-        labs(
-          #       title = "Evolution of obesity rates per sex",
-          #        subtitle = "Children of age 4 in the South",
-          x = " Rate(%)",
-          y = " "
-        ) +
-        theme_minimal( ) +
-        theme(text = element_text(size = 15),
-              legend.position = "bottom") +
-        theme(legend.title = element_blank()) +
-        labs(color="Gender") +
-        scale_color_manual(values=sex_colors)
-
-      Males <- Males %>%
-        mutate(Difference=comma(abs(diff), .01),
-               sex_max=ifelse(diff>0, 1, 0),
-               sex_max=factor(sex_max),
-               label=ifelse(sex_max==1, "Male", "Female"))
-      p2 <-
-        Males %>%
-        ggplot(aes(x=diff,y=year)) +
-        geom_text(aes(x=0, label=Difference, color=label,
-                      text=paste0("Year: ", year,
-                                  "<br>Difference: ", Difference,
-                                  "<br>Max sex: ", label)),
-                  fontface="bold", show.legend = F,
-                  size=5) +
-        scale_y_continuous(breaks = unique(D$year)) +
-
-        # geom_text(aes(x=0, y=3), # 7 because that's the # of y-axis values
-        #           # label="Diff",
-        #           nudge_y =.5, # match the nudge value of the main plot legend
-        #           fontface="bold",
-        #           size=3.25) +
-
-        theme_void() +
-        # coord_cartesian(xlim = c(-.05, 0.05),
-        #                 ylim=c(1,7.5) # needs to match main plot
-        # )+
-        theme(
-          plot.margin = margin(l=0, r=0, b=0, t=0), #otherwise it adds too much space
-          panel.background = element_rect(fill="#EFEFE3", color="#EFEFE3"),
-          legend.position = "none"
-        )+
-        scale_color_manual(values=sex_colors)
-
-
-      # p_whole <-
-      #   # syntax from `patchwork`
-      #   p + p2 + plot_layout(design=
-      #                                  c(
-      #                                    area(l=0,  r=45, t=0, b=1), # defines the main figure area
-      #                                    area(l=46, r=52, t=0, b=1)  # defines the gap figure area
-      #                                  ))
-      p_ly <- ggplotly(p, tooltip = "text") #%>% layout(title = "Region: South")
-      p2_ly <- ggplotly(p2, tooltip = "text") #%>% layout(title= "Difference")
-      subplot(p_ly,
-              p2_ly, nrows = 1, shareX = TRUE, #shareY = TRUE,
-              titleX = T, titleY = T, margin = c(0.005, 0.005, .8, 0.005),
-              widths = c(.9,.1))
-      
-    
-  })
-  
-  # output$plot2 <- renderPlot({
-  #   Data2 <- Data %>% 
-  #     filter(Region ==input$region,
-  #            indicator==input$indicator,
-  #            age==input$age) %>%
-  #     select(year,gender,Pctg)
-  #   
-  #   #aqui no sirve balooo porque nos interesa ambos sexos
-  #   # Data2 <- baloo() %>% #filter(Region ==input$region, indicator==input$indicator, age==input$age) %>%
-  #   #   select(year,gender,Pctg) 
-  #   
-  #   D <- spread(Data2, key = gender, value = Pctg)
-  #   D$diff <- D$Male - D$Female
-  #   D$aver <- 0.5*D$Female + 0.5*D$Male
-  #   D <- gather(D, gender, Pctg, Female:Male , factor_key=TRUE)
-  #   D <- D %>% 
-  #     mutate(Difference=comma(abs(diff), .01))
-  #   
-  #   Males <- D %>%
-  #     filter(gender == "Male")
-  #   Females <- D %>%
-  #     filter(gender == "Female")
-  #   head(Females)
-  #   
-  #   p <- ggplot(D)+
-  #     geom_segment(data = Males,
-  #                  aes(x = Pctg, y = year,
-  #                      yend = Females$year, xend = Females$Pctg), #use the $ operator to fetch data from our "Females" tibble
-  #                  color = "azure3",
-  #                  size = 7, #Note that I sized the segment to fit the points
-  #                  alpha = .5) +
-  #     geom_point(aes(x = Pctg, y = year, color = gender, 
-  #                    text=paste0("Year: ", year, 
-  #                                "<br>Percent: ", Pctg, 
-  #                                "<br>Sex: ", gender)), #shape =15, 
-  #                show.legend = TRUE, size=5) +
-  #     # geom_text(aes(x = aver, y = year, label= Difference), color = "gray3", hjust=0, size=3) +
-  #     # scale_y_continuous(breaks = seq(min(D$year), max(D$year), by = 2)) +
-  #     scale_y_continuous(breaks = unique(D$year)) +
-  #     scale_x_continuous(limits = c(min(D$Pctg), max(D$Pctg)+1)) +
-  #     labs(
-  #       #       title = "Evolution of obesity rates per sex",
-  #       #        subtitle = "Children of age 4 in the South",
-  #       x = " Rate(%)",
-  #       y = " "
-  #     ) +
-  #     theme_minimal( ) +      
-  #     theme(text = element_text(size = 15), 
-  #           legend.position = "bottom") +
-  #     theme(legend.title = element_blank()) +
-  #     labs(color="Gender") +
-  #     scale_color_manual(values=sex_colors)
-  #   
-  #   p
-  # })
   
   output$region_text <- renderText({
-    paste0("Region: ", input$region)
+    paste0("Evolution by sex, Region: ", input$region, " Indicator: ", input$indicator)
   })
 
 
