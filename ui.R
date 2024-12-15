@@ -77,8 +77,8 @@ navbarPage("Dashboard", id="nav",
             ),
 
         # Plot 1
-        h5("Comparison by sex and region"),
-        plotlyOutput("Plot1", height = 220),
+        h5(textOutput("p1_text")),
+        plotlyOutput("Plot1", height = 265),
         
         # Plot 2
         # h5("Evolution by sex "#, textOutput("region")
@@ -88,9 +88,9 @@ navbarPage("Dashboard", id="nav",
         condition = "input.region != 'National'",
 
         h5(textOutput("region_text")
-        ),
+        ),HTML("<span style='color: #BF2F24;'>Female</span> vs <span style='color: #436685;'>Male</span>"),
         # tags$br(),  # Aquí va el break line
-        plotlyOutput("Plot2", height = 320)
+        plotlyOutput("Plot2", height = 250)
         # plotOutput("plot2")
                 )
       ),

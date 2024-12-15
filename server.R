@@ -206,7 +206,7 @@ function(input, output, session) {
       scale_y_continuous(labels = scales::percent) +
       theme_minimal() +
       theme(axis.text.x = element_blank()) +
-      theme(text = element_text(size = 13)) 
+      theme(text = element_text(size = 12)) 
     
     ggplotly(f1,tooltip = "mytext")
     
@@ -263,8 +263,8 @@ function(input, output, session) {
           y = " "
         ) +
         theme_minimal( ) +
-        theme(text = element_text(size = 13),
-              legend.position = "bottom") +
+        theme(text = element_text(size = 12),
+              legend.position = "none") +
         theme(legend.title = element_blank(), 
               # axis.title.x = element_blank()
               ) +
@@ -296,7 +296,7 @@ function(input, output, session) {
                                   "<br>Max sex: ", label)),
                   fontface="bold", show.legend = F,
                   color=sex_colors[2],
-                  size=5) +
+                  size=3.8) +
         geom_text(data=. %>%
                     filter(label=="Female"),
                   aes(x=0, label=Difference, #color=label,
@@ -305,7 +305,7 @@ function(input, output, session) {
                                   "<br>Max sex: ", label)),
                   fontface="bold", show.legend = F,
                   color=sex_colors[1],
-                  size=5) +
+                  size=3.8) +
         scale_y_continuous(breaks = unique(D$year)) +
 
         # geom_text(aes(x=0, y=3), # 7 because that's the # of y-axis values
@@ -342,7 +342,7 @@ function(input, output, session) {
                                     "<br>Max sex: ", label)),
                     fontface="bold", show.legend = F,
                     color=sex_colors[2],
-                    size=5) +
+                    size=3.8) +
           scale_y_continuous(breaks = unique(D$year)) +
           
           # geom_text(aes(x=0, y=3), # 7 because that's the # of y-axis values
@@ -380,7 +380,7 @@ function(input, output, session) {
                                     "<br>Max sex: ", label)),
                     fontface="bold", show.legend = F,
                     color=sex_colors[1],
-                    size=5) +
+                    size=3.8) +
           scale_y_continuous(breaks = unique(D$year)) +
           
           # geom_text(aes(x=0, y=3), # 7 because that's the # of y-axis values
@@ -430,7 +430,7 @@ function(input, output, session) {
           yanchor = "top",
           font = list(size = 14) # Anclar en la parte superior de la leyenda
         ), 
-        showlegend=T,showlegend2=F#, 
+        showlegend=F, showlegend2=F#, 
         # annotations = list(
         #   list(
         #     x = 0.5,            # Posición horizontal centrada
@@ -455,8 +455,16 @@ function(input, output, session) {
   
   
   output$region_text <- renderText({
-    paste0("Evolution by sex, Region: ", input$region, " Indicator: ", input$indicator)
+    paste0("Evolution by sex, Region: ", input$region, " ,Indicator: ", input$indicator, 
+           " and Year: ", input$year)
   })
+  
+  output$p1_text <- renderText({
+    paste0("Comparasion by Region, '", input$sex, "'")
+  })
+  
+  output$region_text2 <- renderText({ paste("hello input is","<font color=\"#FBBB27\"><b>", input$n, "</b></font>") })
+  
 
 
   ## Page 2. Data Explorer ###########################################
