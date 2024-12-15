@@ -421,29 +421,29 @@ function(input, output, session) {
       subplot(p_ly,
               p2_ly, nrows = 1, shareX = TRUE, #shareY = TRUE,
               titleX = T, titleY = T, margin = c(0.005, 0.005, .8, 0.005),
-              widths = c(.9,.1)) %>%
-        layout(legend = list(
-          orientation = "h",      # Orientación horizontal
-          x = 0.5,                # Centrar la leyenda en el eje x
-          y = -0.5,               # Colocar la leyenda debajo del gráfico
-          xanchor = "center",     # Anclar la leyenda al centro
-          yanchor = "top",
-          font = list(size = 14) # Anclar en la parte superior de la leyenda
-        ), 
-        showlegend=F, showlegend2=F#, 
-        # annotations = list(
-        #   list(
-        #     x = 0.5,            # Posición horizontal centrada
-        #     y = -0.15,           # Colocar arriba del gráfico
-        #     text = "Rate (%)",  # Texto del título
-        #     xref = "paper",
-        #     yref = "paper",
-        #     showarrow = FALSE,
-        #     font = list(size = 16)
-        #   )
+              widths = c(.9,.1)) #%>%
+        # layout(legend = list(
+        #   orientation = "h",      # Orientación horizontal
+        #   x = 0.5,                # Centrar la leyenda en el eje x
+        #   y = -0.5,               # Colocar la leyenda debajo del gráfico
+        #   xanchor = "center",     # Anclar la leyenda al centro
+        #   yanchor = "top",
+        #   font = list(size = 12) # Anclar en la parte superior de la leyenda
+        # ), 
+        # showlegend=F, showlegend2=F#, 
+        # # annotations = list(
+        # #   list(
+        # #     x = 0.5,            # Posición horizontal centrada
+        # #     y = -0.15,           # Colocar arriba del gráfico
+        # #     text = "Rate (%)",  # Texto del título
+        # #     xref = "paper",
+        # #     yref = "paper",
+        # #     showarrow = FALSE,
+        # #     font = list(size = 16)
+        # #   )
+        # # )
+        # 
         # )
-        
-        )
       
     
    
@@ -460,10 +460,23 @@ function(input, output, session) {
   })
   
   output$p1_text <- renderText({
-    paste0("Comparasion by Region, '", input$sex, "'")
+    paste0("Comparasion by Region, Sex:", input$sex, " ,Indicator: ",
+    input$indicator, " ,Year: ", input$year, " and Age: ", input$age)
   })
   
-  output$region_text2 <- renderText({ paste("hello input is","<font color=\"#FBBB27\"><b>", input$n, "</b></font>") })
+  output$region_text2 <- renderUI({
+    # Texto dinámico basado en input
+    text <- paste0("Evolution by sex, Region: ", input$region, 
+                   " ,Indicator: ", input$indicator, " and Age: ", input$age, 
+                   ". Female vs Male")
+    
+    # Reemplazar "Female" y "Male" con texto estilizado
+    styled_text <- gsub("Female", "<span style='color: #BF2F24;'>Female</span>", text)
+    styled_text <- gsub("Male", "<span style='color: #436685;'>Male</span>", styled_text)
+    
+    # Convertir a HTML para renderizar correctamente
+    HTML(styled_text)
+  })
   
 
 

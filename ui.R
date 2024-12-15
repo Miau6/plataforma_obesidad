@@ -87,8 +87,9 @@ navbarPage("Dashboard", id="nav",
       conditionalPanel(
         condition = "input.region != 'National'",
 
-        h5(textOutput("region_text")
-        ),HTML("<span style='color: #BF2F24;'>Female</span> vs <span style='color: #436685;'>Male</span>"),
+        # h5(textOutput("region_text")
+        # ),HTML("<span style='color: #BF2F24;'>Female</span> vs <span style='color: #436685;'>Male</span>"),
+        htmlOutput("region_text2"),
         # tags$br(),  # Aquí va el break line
         plotlyOutput("Plot2", height = 250)
         # plotOutput("plot2")
